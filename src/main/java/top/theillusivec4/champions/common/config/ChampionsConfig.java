@@ -42,6 +42,7 @@ public class ChampionsConfig {
     public static List<EntityConfig> entities;
     public static int beaconProtectionRange;
     public static boolean championSpawners;
+    public static double spawnerChampionChance;
     public static int deathMessageTier;
     public static List<? extends String> dimensionList;
     public static Permission dimensionPermission;
@@ -150,6 +151,7 @@ public class ChampionsConfig {
     public static void bakeCommon() {
         beaconProtectionRange = COMMON.beaconProtectionRange.get();
         championSpawners = COMMON.championSpawners.get();
+        spawnerChampionChance = COMMON.spawnerChampionChance.get();
         deathMessageTier = COMMON.deathMessageTier.get();
         dimensionList = COMMON.dimensionList.get();
         dimensionPermission = COMMON.dimensionPermission.get();
@@ -312,6 +314,7 @@ public class ChampionsConfig {
     public static class CommonConfig {
         public final IntValue beaconProtectionRange;
         public final BooleanValue championSpawners;
+        public final DoubleValue spawnerChampionChance;
         public final IntValue deathMessageTier;
         public final ConfigValue<List<? extends String>> dimensionList;
         public final EnumValue<Permission> dimensionPermission;
@@ -338,6 +341,10 @@ public class ChampionsConfig {
 
             championSpawners = builder.comment("Set to true to enable champions from mob spawners")
                     .translation(CONFIG_PREFIX + "championSpawners").define("championSpawners", false);
+
+            spawnerChampionChance = builder.comment("The chance (0.0-1.0) for spawners to generate champion mobs when championSpawners is enabled")
+                    .translation(CONFIG_PREFIX + "spawnerChampionChance")
+                    .defineInRange("spawnerChampionChance", 0.5D, 0.0D, 1.0D);
 
             deathMessageTier = builder.comment(
                             "The minimum tier of champions that will have death messages sent out upon defeat (0 to disable)")

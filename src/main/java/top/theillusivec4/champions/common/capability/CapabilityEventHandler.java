@@ -2,6 +2,7 @@ package top.theillusivec4.champions.common.capability;
 
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
@@ -51,8 +52,20 @@ public class CapabilityEventHandler {
 
                 if (serverChampion.getRank().isEmpty()) {
                     // Todo: Custom entity spawn rank base on mob spawn type
-                    if (!ChampionsConfig.championSpawners && evt.getSpawnType() == MobSpawnType.SPAWNER) {
-                        serverChampion.setRank(RankManager.getLowestRank());
+                    if (evt.getSpawnType() == MobSpawnType.SPAWNER) {
+                        if (!ChampionsConfig.championSpawners) {
+                            serverChampion.setRank(RankManager.getLowestRank());
+                        } else {
+                            // 使用概率配置来决定是否生成精英怪
+                            RandomSource random = evt.getLevel().getRandom();
+                            if (random.nextDouble() < ChampionsConfig.spawnerChampionChance) {
+                                ChampionBuilder.spawn(champion);
+                            } else {
+                                serverChampion.setRank(RankManager.getLowestRank());
+                            }
+                        }
+                    } else {
+                        ChampionBuilder.spawn(champion);
                     }
                 }
             });
