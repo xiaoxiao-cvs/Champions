@@ -53,6 +53,7 @@ public class CapabilityEventHandler {
                 if (serverChampion.getRank().isEmpty()) {
                     // Todo: Custom entity spawn rank base on mob spawn type
                     if (evt.getSpawnType() == MobSpawnType.SPAWNER) {
+                        // 只对刷怪笼生成的怪物应用championSpawners配置
                         if (!ChampionsConfig.championSpawners) {
                             serverChampion.setRank(RankManager.getLowestRank());
                         } else {
@@ -64,7 +65,12 @@ public class CapabilityEventHandler {
                                 serverChampion.setRank(RankManager.getLowestRank());
                             }
                         }
+                    } else if (evt.getSpawnType() == MobSpawnType.SPAWN_EGG) {
+                        // 刷怪蛋生成的怪物不受championSpawners配置限制，直接生成精英怪
+                        // 如果刷怪蛋已经有预设的精英数据，ChampionBuilder.spawn会保持这些数据
+                        ChampionBuilder.spawn(champion);
                     } else {
+                        // 其他生成方式（自然生成等）正常处理
                         ChampionBuilder.spawn(champion);
                     }
                 }
